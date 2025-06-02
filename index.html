@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <title>Erlangga - Bioskop 360</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+
     <style>
       body {
         margin: 0;
@@ -32,7 +34,7 @@
       </a-assets>
 
       <!-- Kamera -->
-      <a-entity position="0 1.6 -14.894">
+      <a-entity position="0 0.8 -14.894">
         <a-camera wasd-controls-enabled="true" look-controls-enabled="true" cursor="fuse: true; fuseTimeout: 2000" raycaster="objects: .interactable-object" reticle-fuse-animation
           ><a-entity id="reticle-progress" geometry="primitive: ring; radiusInner: 0.035; radiusOuter: 0.045" material="color: red; shader: flat; opacity: 0.5" position="0 0 -1" visible="false"></a-entity>
 
@@ -49,7 +51,7 @@
       <!-- GLTF Model -->
       <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/vr_cinema_environment/scene.gltf" position="0 0 -5" scale="1 1 1"> </a-entity>
 
-      <a-entity id="npc" animation-mixer="clip: Sit" gltf-model="https://myblueskycpny.github.io/360Assets/eleventh_doctor_doctor_who/NPC%20Watch.glb" position="0 0 -5" scale="1 1 1"> </a-entity>
+      <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/NPC/NPC.gltf" animation-mixer position="0 -2.098 -17.042" rotation="0 180 0" scale="1 1 1"> </a-entity>
     </a-scene>
 
     <script>
