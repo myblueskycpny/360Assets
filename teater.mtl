@@ -1,10 +1,10 @@
-# Blender MTL File: 'None'
-# Material Count: 1
+# Blender 3.4.1 MTL File: 'None'
+# www.blender.org
 
 newmtl Scene_-_Root
-Ns 104.740489
+Ns 104.740486
 Ka 1.000000 1.000000 1.000000
-Kd 0.409452 0.409452 0.409452
+Kd 0.255041 0.508311 1.000000
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
