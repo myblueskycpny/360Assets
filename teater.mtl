@@ -1,12 +1,12 @@
-# Blender MTL File: 'None'
-# Material Count: 1
+# Blender 3.4.1 MTL File: 'None'
+# www.blender.org
 
 newmtl Scene_-_Root
-Ns 761.652896
-Ka 1.000000 1.000000 1.000000
-Kd 0.783444 0.930182 1.000000
+Ns 10.000000
+Ka 0.1 0.1 0.1        # Warna ambient gelap
+Kd 0.15 0.10 0.25     # Warna diffuse lembut semi gelap (biru violet tua)
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 1
+illum 1              # Tetap simple shading, tidak glossy
