@@ -1,50 +1,133 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>VR Cinema GLTF Viewer</title>
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Teleport + Video VR</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <style>
-      body { margin: 0; }
-      #loading {
-        position: absolute;
-        width: 100%;
+      html, body {
+        margin: 0;
         height: 100%;
-        background: #000;
-        color: #fff;
-        font-family: sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
+        overflow: hidden;
       }
     </style>
   </head>
   <body>
-    <div id="loading">Loading VR Cinema...</div>
-    <a-scene background="color: #ECECEC">
-      <!-- Kamera -->
-      <a-entity position="0 1.6 0">
-        <a-camera wasd-controls-enabled="true" look-controls-enabled="true"></a-camera>
-      </a-entity>
-
-      <!-- Pencahayaan -->
-      <a-entity light="type: ambient; intensity: 1"></a-entity>
-      <a-entity light="type: directional; intensity: 0.5" position="1 1 0.5"></a-entity>
-
-      <!-- GLTF Model -->
-      <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/vr_cinema_environment/scene.gltf"
-                position="0 0 -5"
-                scale="1 1 1">
-      </a-entity>
-    </a-scene>
-
     <script>
-      // Hapus loading saat scene selesai dimuat
-      const scene = document.querySelector('a-scene');
-      scene.addEventListener('loaded', () => {
-        document.getElementById('loading').style.display = 'none';
+      function showPopup(message) {
+        const popup = document.querySelector("#popupText");
+        popup.setAttribute("text", "value:" + message + "; color: red; align: center; width: 2");
+        popup.setAttribute("visible", "true");
+        setTimeout(() => popup.setAttribute("visible", "false"), 2000);
+      }
+
+      AFRAME.registerComponent("teleport-on-fuse", {
+        init: function () {
+          this.el.addEventListener("click", () => {
+            const world = document.querySelector("#world");
+            if (this.el.id === "gotoA") {
+              world.setAttribute("position", "-2 0 3");
+              showPopup("Berhasil pindah ke Titik A");
+            } else if (this.el.id === "gotoB") {
+              world.setAttribute("position", "2 0 3");
+              showPopup("Berhasil pindah ke Titik B");
+            } else if (this.el.id === "gotoC") {
+              world.setAttribute("position", "0 0 0");
+              showPopup("Berhasil kembali ke Titik Awal");
+            }
+          });
+        },
+      });
+
+      AFRAME.registerComponent("video-texture-update", {
+        init: function () {
+          const video = document.querySelector("#video");
+          if (video.readyState >= 2 && video.paused) {
+            video.play().catch((e) => console.warn("Autoplay prevented:", e));
+          }
+        },
+      });
+
+      AFRAME.registerComponent("reticle-fuse-animation", {
+        init: function () {
+          const reticle = document.querySelector("#reticle-progress");
+          const cursor = this.el;
+
+          cursor.addEventListener("fusing", () => {
+            reticle.setAttribute("visible", "true");
+            reticle.setAttribute("animation", {
+              property: "rotation",
+              to: "0 0 360",
+              loop: true,
+              dur: 2000,
+              easing: "linear",
+            });
+          });
+
+          const stopFuse = () => {
+            reticle.removeAttribute("animation");
+            reticle.setAttribute("visible", "false");
+            reticle.setAttribute("rotation", "0 0 0");
+          };
+
+          cursor.addEventListener("click", stopFuse);
+          cursor.addEventListener("mouseleave", stopFuse);
+        },
       });
     </script>
+
+    <a-scene xr-mode-ui="enabled: true">
+      <a-assets>
+        <!-- Video -->
+        <video id="video" loop crossorigin="anonymous" playsinline webkit-playsinline muted>
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+        </video>
+        <!-- GLTF model hosted via GitHub CDN -->
+        <a-asset-item
+          id="cinema3d"
+          src="https://cdn.jsdelivr.net/gh/myblueskycpny/360Assets@main/vr_cinema_environment/scene.gltf">
+        </a-asset-item>
+      </a-assets>
+
+      <!-- Kamera dan Reticle -->
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-camera look-controls wasd-controls
+          cursor="fuse: true; fuseTimeout: 2000"
+          raycaster="objects: .interactable-object"
+          reticle-fuse-animation>
+          <a-entity id="popupText" text="value: ; color: red; align: center; width: 2" position="0 .5 -1.5" visible="false"></a-entity>
+        </a-camera>
+      </a-entity>
+
+      <!-- Dunia -->
+      <a-entity id="world" position="0 0 0" scale="2 2 2">
+        <!-- GLTF model -->
+        <a-gltf-model src="#cinema3d" position="0 0 0" scale="1 1 1" rotation="0 0 0"></a-gltf-model>
+
+        <!-- Video Plane -->
+        <a-plane
+          width="1.78"
+          height="1"
+          material="src: #video"
+          position="-0.256 2.8 -3.318"
+          scale="3.2 3.2 3.2"
+          video-texture-update>
+        </a-plane>
+
+        <!-- Titik teleport (bisa diaktifkan kembali jika mau) -->
+        <!--
+        <a-sphere id="gotoA" position="2 1.5 -3" radius="0.2" color="orange" class="interactable-object" teleport-on-fuse></a-sphere>
+        <a-sphere id="gotoB" position="-2 1.5 -3" radius="0.2" color="blue" class="interactable-object" teleport-on-fuse></a-sphere>
+        <a-sphere id="gotoC" position="0 1.6 0" radius="0.2" color="black" class="interactable-object" teleport-on-fuse></a-sphere>
+        -->
+
+        <!-- Sky -->
+        <a-sky color="#ECECEC"></a-sky>
+      </a-entity>
+
+      <a-light type="ambient" color="#000000"></a-light>
+      <a-light type="point" intensity="1" position="2 4 4"></a-light>
+    </a-scene>
   </body>
 </html>
