@@ -99,7 +99,7 @@
   ],
   "images": [
     {
-      "uri": "https://raw.githubusercontent.com/myblueskycpny/360Assets/refs/heads/main/vr_cinema_environment/textures/mat1_baseColor.png"
+      "uri": "textures/mat1_baseColor.png"
     }
   ],
   "materials": [
