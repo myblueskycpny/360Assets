@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>VR Cinema GLTF Viewer</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; }
+      #loading {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        color: #fff;
+        font-family: sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">Loading VR Cinema...</div>
+    <a-scene background="color: #ECECEC">
+      <!-- Kamera -->
+      <a-entity position="0 1.6 0">
+        <a-camera wasd-controls-enabled="true" look-controls-enabled="true"></a-camera>
+      </a-entity>
+
+      <!-- Pencahayaan -->
+      <a-entity light="type: ambient; intensity: 1"></a-entity>
+      <a-entity light="type: directional; intensity: 0.5" position="1 1 0.5"></a-entity>
+
+      <!-- GLTF Model -->
+      <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/vr_cinema_environment/scene.gltf"
+                position="0 0 -5"
+                scale="1 1 1">
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Hapus loading saat scene selesai dimuat
+      const scene = document.querySelector('a-scene');
+      scene.addEventListener('loaded', () => {
+        document.getElementById('loading').style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
