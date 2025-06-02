@@ -2,11 +2,11 @@
 # www.blender.org
 
 newmtl Scene_-_Root
-Ns 10.000000
-Ka 0.1 0.1 0.1        # Warna ambient gelap
-Kd 0.15 0.10 0.25     # Warna diffuse lembut semi gelap (biru violet tua)
-Ks 0.000000 0.000000 0.000000
+Ns 20.000000
+Ka 0.4 0.4 0.4            # Ambient light soft
+Kd 0.6 0.4 0.7            # Diffuse: ungu muda ke pink pastel (cerah & elegan)
+Ks 0.1 0.1 0.1            # Sedikit specular agar tak sepenuhnya matte
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 1              # Tetap simple shading, tidak glossy
+illum 2                  # Gunakan shading dengan specular highlight
