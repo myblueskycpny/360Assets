@@ -29,7 +29,7 @@
 
     <a-scene xr-mode-ui="enabled: true" background="color: black">
       <a-assets>
-        <video id="video" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline autoplay muted></video>
+        <video id="video" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
       </a-assets>
 
       <!-- Kamera -->
@@ -88,9 +88,13 @@
       // Komponen untuk play video saat awal
       AFRAME.registerComponent("video-texture-update", {
         init: function () {
-          if (video.readyState >= 2 && video.paused) {
-            video.play().catch((e) => console.warn("Autoplay prevented:", e));
-          }
+          var el = this.el;
+          el.addEventListener("mouseenter", function () {
+            var videoEl = document.querySelector("#video");
+            if (videoEl.paused) {
+              videoEl.play();
+            }
+          });
         },
       });
 
