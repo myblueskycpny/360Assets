@@ -29,9 +29,7 @@
 
     <a-scene xr-mode-ui="enabled: true" background="color: black">
       <a-assets>
-        <video id="video" loop crossorigin="anonymous" playsinline webkit-playsinline muted>
-          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-        </video>
+        <video id="video" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
       </a-assets>
 
       <!-- Kamera -->
@@ -93,6 +91,33 @@
           if (video.readyState >= 2 && video.paused) {
             video.play().catch((e) => console.warn("Autoplay prevented:", e));
           }
+        },
+      });
+
+      AFRAME.registerComponent("reticle-fuse-animation", {
+        init: function () {
+          const reticle = document.querySelector("#reticle-progress");
+          const cursor = this.el;
+
+          cursor.addEventListener("fusing", () => {
+            reticle.setAttribute("visible", "true");
+            reticle.setAttribute("animation", {
+              property: "rotation",
+              to: "0 0 360",
+              loop: true,
+              dur: 2000,
+              easing: "linear",
+            });
+          });
+
+          const stopFuse = () => {
+            reticle.removeAttribute("animation");
+            reticle.setAttribute("visible", "false");
+            reticle.setAttribute("rotation", "0 0 0");
+          };
+
+          cursor.addEventListener("click", stopFuse);
+          cursor.addEventListener("mouseleave", stopFuse);
         },
       });
     </script>
