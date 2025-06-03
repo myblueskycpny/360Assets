@@ -26,7 +26,8 @@
   </head>
   <body>
     <div id="loading">Loading VR Cinema...</div>
-    <a-scene xr-mode-ui="enabled: true" background="color: #ECECEC">
+
+    <a-scene xr-mode-ui="enabled: true" background="color: black">
       <a-assets>
         <video id="video" loop crossorigin="anonymous" playsinline webkit-playsinline muted>
           <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
@@ -35,35 +36,60 @@
 
       <!-- Kamera -->
       <a-entity position="0 0.8 -14.894">
-        <a-camera wasd-controls-enabled="true" look-controls-enabled="true" cursor="fuse: true; fuseTimeout: 2000" raycaster="objects: .interactable-object" reticle-fuse-animation
-          ><a-entity id="reticle-progress" geometry="primitive: ring; radiusInner: 0.035; radiusOuter: 0.045" material="color: red; shader: flat; opacity: 0.5" position="0 0 -1" visible="false"></a-entity>
-
-          <a-entity geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" material="color: red; shader: flat" position="0 0 -1"></a-entity
-        ></a-camera>
+        <a-camera wasd-controls-enabled="true" look-controls-enabled="true" cursor="fuse: true; fuseTimeout: 2000" raycaster="objects: .interactable-object" reticle-fuse-animation>
+          <a-entity id="reticle-progress" geometry="primitive: ring; radiusInner: 0.035; radiusOuter: 0.045" material="color: red; shader: flat; opacity: 0.5" position="0 0 -1" visible="false"></a-entity>
+          <a-entity geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" material="color: red; shader: flat" position="0 0 -1"></a-entity>
+        </a-camera>
       </a-entity>
 
-      <a-plane width="1.78" height="1" material="src: #video" position="0 2.800 -32.448" scale="11 11 11" class="interactable-object" video-texture-update> </a-plane>
+      <!-- Layar Video -->
+      <a-plane width="1.78" height="1" material="src: #video" position="0 2.800 -32.448" scale="11 11 11" class="interactable-object" video-texture-update></a-plane>
 
       <!-- Pencahayaan -->
       <a-entity light="type: ambient; intensity: 1"></a-entity>
       <a-entity light="type: directional; intensity: 0.5" position="1 1 0.5"></a-entity>
 
-      <!-- GLTF Model -->
-      <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/vr_cinema_environment/scene.gltf" position="0 0 -5" scale="1 1 1"> </a-entity>
+      <!-- Model GLTF -->
+      <a-entity id="model1" gltf-model="https://myblueskycpny.github.io/360Assets/vr_cinema_environment/scene.gltf" position="0 0 -5" scale="1 1 1"></a-entity>
 
-      <a-entity gltf-model="https://myblueskycpny.github.io/360Assets/NPC/NPC.gltf" animation-mixer position="0 -2.098 -17.042" rotation="0 180 0" scale="1 1 1"> </a-entity>
+      <a-entity id="model2" gltf-model="https://myblueskycpny.github.io/360Assets/NPC/NPC.gltf" animation-mixer position="0 -2.098 -17.042" rotation="0 180 0" scale="1 1 1"></a-entity>
     </a-scene>
 
     <script>
-      // Hapus loading saat scene selesai dimuat
-      const scene = document.querySelector("a-scene");
-      scene.addEventListener("loaded", () => {
-        document.getElementById("loading").style.display = "none";
+      const loadingEl = document.getElementById("loading");
+      const video = document.querySelector("#video");
+      const model1 = document.querySelector("#model1");
+      const model2 = document.querySelector("#model2");
+
+      let model1Loaded = false;
+      let model2Loaded = false;
+      let videoLoaded = false;
+
+      // Cek masing-masing model dan video
+      model1.addEventListener("model-loaded", () => {
+        model1Loaded = true;
+        checkAllLoaded();
       });
 
+      model2.addEventListener("model-loaded", () => {
+        model2Loaded = true;
+        checkAllLoaded();
+      });
+
+      video.addEventListener("loadeddata", () => {
+        videoLoaded = true;
+        checkAllLoaded();
+      });
+
+      function checkAllLoaded() {
+        if (model1Loaded && model2Loaded && videoLoaded) {
+          loadingEl.style.display = "none";
+        }
+      }
+
+      // Komponen untuk play video saat awal
       AFRAME.registerComponent("video-texture-update", {
         init: function () {
-          const video = document.querySelector("#video");
           if (video.readyState >= 2 && video.paused) {
             video.play().catch((e) => console.warn("Autoplay prevented:", e));
           }
