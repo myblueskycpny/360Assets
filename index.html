@@ -29,11 +29,11 @@
 
     <a-scene xr-mode-ui="enabled: true" background="color: black">
       <a-assets>
-        <video id="video" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <video id="video" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
       </a-assets>
 
       <!-- Kamera -->
-      <a-entity position="0 -0.2 -10.894">
+      <a-entity position="0 -0.4 -5.894">
         <a-camera wasd-controls-enabled="true" look-controls-enabled="true" cursor="fuse: true; fuseTimeout: 2000" raycaster="objects: .interactable-object" reticle-fuse-animation>
           <a-entity id="reticle-progress" geometry="primitive: ring; radiusInner: 0.035; radiusOuter: 0.045" material="color: red; shader: flat; opacity: 0.5" position="0 0 -1" visible="false"></a-entity>
           <a-entity geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" material="color: red; shader: flat" position="0 0 -1"></a-entity>
@@ -63,7 +63,7 @@
       let model2Loaded = false;
       let videoLoaded = false;
 
-      // Cek masing-masing model dan video
+      // Event listener untuk model dan video
       model1.addEventListener("model-loaded", () => {
         model1Loaded = true;
         checkAllLoaded();
@@ -81,23 +81,22 @@
 
       function checkAllLoaded() {
         if (model1Loaded && model2Loaded && videoLoaded) {
-          loadingEl.style.display = "none";
+          loadingEl.style.opacity = "0";
+          setTimeout(() => (loadingEl.style.display = "none"), 1000);
         }
       }
 
-      // Komponen untuk play video saat awal
+      // Komponen play video saat mouse enter
       AFRAME.registerComponent("video-texture-update", {
         init: function () {
-          var el = this.el;
-          el.addEventListener("mouseenter", function () {
-            var videoEl = document.querySelector("#video");
-            if (videoEl.paused) {
-              videoEl.play();
-            }
+          this.el.addEventListener("mouseenter", () => {
+            const videoEl = document.querySelector("#video");
+            if (videoEl.paused) videoEl.play().catch(console.error);
           });
         },
       });
 
+      // Animasi reticle saat fuse
       AFRAME.registerComponent("reticle-fuse-animation", {
         init: function () {
           const reticle = document.querySelector("#reticle-progress");
@@ -124,6 +123,23 @@
           cursor.addEventListener("mouseleave", stopFuse);
         },
       });
+
+      // Fetch URL video dari backend proxy di Vercel
+      fetch("https://get-video-url.vercel.app/script")
+        .then((response) => {
+          if (!response.ok) throw new Error("Gagal mengambil URL video");
+          return response.json();
+        })
+        .then((data) => {
+          const videoEl = document.getElementById("video");
+          videoEl.src = data.videoUrl;
+          videoEl.load(); // Muat ulang video dengan URL baru
+          videoEl.play().catch((err) => console.error("Autoplay gagal:", err));
+        })
+        .catch((error) => {
+          console.error("Error saat ambil video:", error);
+          alert("Tidak dapat memuat video.");
+        });
     </script>
   </body>
 </html>

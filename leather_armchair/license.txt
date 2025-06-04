@@ -1,0 +1,11 @@
+Model Information:
+* title:	Leather armchair
+* source:	https://sketchfab.com/3d-models/leather-armchair-cb7ec199c6164acb9e53d7610195c47a
+* author:	G-Box (https://sketchfab.com/gabszf)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Leather armchair" (https://sketchfab.com/3d-models/leather-armchair-cb7ec199c6164acb9e53d7610195c47a) by G-Box (https://sketchfab.com/gabszf) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
